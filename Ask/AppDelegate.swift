@@ -7,7 +7,50 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseCore
+import FirebaseStorage
+import FirebaseDatabase
+import FirebaseAuth
+import UserNotifications
+import Appsee
+import SwiftyStoreKit
+import StoreKit
 
+var ref: DatabaseReference?
+var uid = String()
+
+var campaignids = [String]()
+var campaigntitles = [String:String]()
+var campaignyes = [String:String]()
+var campaignno = [String:String]()
+var campaigntotals = [String:String]()
+var campaigncost = [String:String]()
+
+var selectedcampaignid = String()
+
+var groupids = [String]()
+var grouptitles = [String:String]()
+var groupyes = [String:String]()
+var groupno = [String:String]()
+var grouptotals = [String:String]()
+var groupcost = [String:String]()
+
+var selectedgroupid = String()
+
+var contentids = [String]()
+var contenttitles = [String:String]()
+var contentyes = [String:String]()
+var contentno = [String:String]()
+var contenttotals = [String:String]()
+var contentcost = [String:String]()
+var contentimages = [String:UIImage]()
+
+var selectedcontent = String()
+
+var firstname = String()
+var email = String()
+var password = String()
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -16,6 +59,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        FirebaseApp.configure()
+        
+        Appsee.start("c693e035a56547669ab524f3b2649e10")
+
+        SwiftyStoreKit.completeTransactions(atomically: true) { products in
+            
+            for product in products {
+                
+                if product.transaction.transactionState == .purchased || product.transaction.transactionState == .restored {
+                    
+                    if product.needsFinishTransaction {
+                        // Deliver content from server, then:
+                        SwiftyStoreKit.finishTransaction(product.transaction)
+                    }
+                    print("purchased: \(product)")
+                }
+            }
+        }
+        
         return true
     }
 
